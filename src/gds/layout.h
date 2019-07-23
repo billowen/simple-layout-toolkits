@@ -1,5 +1,11 @@
 #ifndef GDS_LAYOUT_H
 #define GDS_LAYOUT_H
+#include <QString>
+#include <ctime>
+#include <memory>
+#include <vector>
+#include <QMap>
+#include "cell.h"
 
 namespace gds {
 /**
@@ -8,7 +14,29 @@ namespace gds {
 class Layout
 {
 public:
-    Layout();
+    Layout(const QString &name, short version);
+
+    QString name() const;
+    short version() const;
+    double unit() const;
+    double precision() const;
+    time_t createdAt() const;
+    time_t modifiedAt() const;
+    Cell * cell(const QString &name) const;
+
+    void setName(const QString &name);
+    void setUnit(double unit);
+    void setPrecision(double precision);
+    void setCreatedAt(time_t time);
+    void setModifiedAt(time_t time);
+private:
+    QString _name;
+    short _version;
+    double _unit, _precision;
+
+    time_t _createdAt, _modifiedAt;
+    QMap<QString, size_t> _cellIdx;
+    std::vector<std::unique_ptr<Cell> > _cells;
 };
 
 }

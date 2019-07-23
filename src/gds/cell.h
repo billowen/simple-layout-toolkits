@@ -8,7 +8,7 @@
 namespace gds {
 class Layout;
 /**
- * @brief A collection of drawing elements and references to other Cells
+ * @brief A collection of drawing elements and references to other Cells (GDSII: STRUCTURE)
  */
 class Cell
 {
