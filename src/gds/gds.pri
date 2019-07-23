@@ -1,5 +1,5 @@
 HEADERS += \
-    $$PWD/library.h
+    $$PWD/layout.h
 
 SOURCES += \
-    $$PWD/library.cpp
+    $$PWD/layout.cpp
