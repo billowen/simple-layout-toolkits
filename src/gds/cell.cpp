@@ -1,4 +1,5 @@
 #include "cell.h"
+#include <limits>
 
 gds::Cell::Cell(gds::Layout *parent)
 {
@@ -45,4 +46,38 @@ QVector<gds::ReferenceBase *> gds::Cell::references() const
 void gds::Cell::setName(const QString &name)
 {
     _name = name;
+}
+
+QRect gds::Cell::boundingRect()
+{
+    if (_elements.size() == 0 && _references.size() == 0) {
+        return QRect(QPoint(0, 0), QPoint(0, 0));
+    }
+
+    int tlx = std::numeric_limits<int>::max();
+    int tly = std::numeric_limits<int>::max();
+    int brx = std::numeric_limits<int>::min();
+    int bry = std::numeric_limits<int>::min();
+
+    for (auto & e : _elements) {
+        QRect rect = e->boundingRect();
+        QPoint topLeft = rect.topLeft();
+        QPoint bottomRight = rect.bottomRight();
+        tlx = std::min(tlx, topLeft.x());
+        tly = std::min(tly, topLeft.y());
+        brx = std::max(brx, bottomRight.x());
+        bry = std::max(bry, bottomRight.y());
+    }
+
+    for (auto & e : _references) {
+        QRect rect = e->boundingRect();
+        QPoint topLeft = rect.topLeft();
+        QPoint bottomRight = rect.bottomRight();
+        tlx = std::min(tlx, topLeft.x());
+        tly = std::min(tly, topLeft.y());
+        brx = std::max(brx, bottomRight.x());
+        bry = std::max(bry, bottomRight.y());
+    }
+
+    return QRect(QPoint(tlx, tly), QPoint(brx, bry));
 }
