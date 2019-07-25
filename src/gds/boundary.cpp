@@ -29,8 +29,7 @@ void gds::Boundary::setPoints(QVector<QPoint> &pts)
     _points.clear();
     _points = pts;
 
-    // 将_bbox标记为失效
-    _bbox.reset(nullptr);
+    invalidBBox();
 }
 
 void gds::Boundary::calculateBBox()

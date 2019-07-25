@@ -29,3 +29,8 @@ QRect gds::ElementBase::boundingRect()
 
     return *_bbox;
 }
+
+void gds::ElementBase::invalidBBox()
+{
+    _bbox.reset(nullptr);
+}

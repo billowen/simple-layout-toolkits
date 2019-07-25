@@ -23,6 +23,7 @@ public:
 
     void setLayer(const Layer &layer);
 protected:
+    void invalidBBox();
     virtual void calculateBBox() = 0;
 
     Cell *_parent;

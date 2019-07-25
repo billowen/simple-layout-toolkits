@@ -4,6 +4,7 @@ HEADERS += \
     $$PWD/elementbase.h \
     $$PWD/layer.h \
     $$PWD/layout.h \
+    $$PWD/path.h \
     $$PWD/referencebase.h
 
 SOURCES += \
@@ -12,4 +13,5 @@ SOURCES += \
     $$PWD/elementbase.cpp \
     $$PWD/layer.cpp \
     $$PWD/layout.cpp \
+    $$PWD/path.cpp \
     $$PWD/referencebase.cpp

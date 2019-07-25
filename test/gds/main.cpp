@@ -1,4 +1,5 @@
 #include "tst_boundary.h"
+#include "tst_path.h"
 
 #include <gtest/gtest.h>
 

@@ -7,7 +7,8 @@ CONFIG -= app_bundle
 CONFIG += thread
 
 HEADERS += \
-        tst_boundary.h
+        tst_boundary.h \
+        tst_path.h
 
 SOURCES += \
         main.cpp
