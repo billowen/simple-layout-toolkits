@@ -24,7 +24,7 @@ public:
     void setLayer(const Layer &layer);
 protected:
     virtual void calculateBBox() = 0;
-private:
+
     Cell *_parent;
     Layer _layer;
     std::unique_ptr<QRect> _bbox;
