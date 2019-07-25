@@ -14,6 +14,7 @@ class Cell
 {
 public:
     Cell(Layout *parent);
+    Cell(Layout *parent, const QString &name);
 
     Layout * parent() const;
     QString name() const;

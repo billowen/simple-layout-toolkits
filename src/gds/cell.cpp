@@ -6,6 +6,12 @@ gds::Cell::Cell(gds::Layout *parent)
     _name = "";
 }
 
+gds::Cell::Cell(gds::Layout *parent, const QString &name)
+{
+    _parent = parent;
+    _name = name;
+}
+
 gds::Layout *gds::Cell::parent() const
 {
     return _parent;

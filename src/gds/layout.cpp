@@ -43,11 +43,13 @@ time_t gds::Layout::modifiedAt() const
 
 gds::Cell *gds::Layout::cell(const QString &name) const
 {
-    if (_cellIdx.contains(name) && _cellIdx[name] < _cells.size()) {
-        return _cells[_cellIdx[name]].get();
-    } else {
-        return nullptr;
+    for (auto &cell : _cells) {
+        if (cell->name() == name) {
+            return cell.get();
+        }
     }
+
+    return nullptr;
 }
 
 void gds::Layout::setName(const QString &name)
@@ -73,4 +75,26 @@ void gds::Layout::setCreatedAt(time_t time)
 void gds::Layout::setModifiedAt(time_t time)
 {
     _modifiedAt = time;
+}
+
+gds::Cell * gds::Layout::createCell(const QString &name)
+{
+    // Check if there is cell has the same name;
+    for (auto & cell : _cells) {
+        if (cell->name() == name) {
+            throw std::runtime_error("The cell name has been used.");
+        }
+    }
+
+    _cells.push_back(std::unique_ptr<Cell>(new Cell(this, name)));
+    return _cells.back().get();
+}
+
+void gds::Layout::deleteCell(const QString &name)
+{
+    for (size_t i = 0; i < _cells.size(); i++) {
+        if (_cells[i]->name() == name) {
+            _cells.erase(_cells.begin() + i);
+        }
+    }
 }

@@ -29,13 +29,25 @@ public:
     void setPrecision(double precision);
     void setCreatedAt(time_t time);
     void setModifiedAt(time_t time);
+
+    /**
+     * @brief Create a new cell in layout and the cell will be
+     * initialized with specific name;
+     * @param name Cell name.
+     * @return The pointer of the cell instance.
+     */
+    Cell * createCell(const QString &name);
+    /**
+     * @brief Delete a cell.
+     * @param name Cell name
+     */
+    void deleteCell(const QString &name);
 private:
     QString _name;
     short _version;
     double _unit, _precision;
 
     time_t _createdAt, _modifiedAt;
-    QMap<QString, size_t> _cellIdx;
     std::vector<std::unique_ptr<Cell> > _cells;
 };
 
