@@ -5,10 +5,13 @@
 
 namespace gds {
 
+/**
+ * @brief A simple reference to another Cell (GDSII: SREF)
+ */
 class CellReference : public ReferenceBase
 {
 public:
-    CellReference(Cell *parent);
+    explicit CellReference(Cell *parent);
     virtual ~CellReference();
 
 protected:

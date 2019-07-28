@@ -3,6 +3,7 @@
 #include <QString>
 #include <QRect>
 #include <QVector>
+#include <QSet>
 #include <memory>
 #include "elementbase.h"
 #include "referencebase.h"
@@ -10,14 +11,16 @@
 
 namespace gds {
 class Layout;
+class ReferenceBase;
+
 /**
  * @brief A collection of drawing elements and references to other Cells (GDSII: STRUCTURE)
  */
 class Cell
 {
 public:
-    Cell(Layout *parent);
-    Cell(Layout *parent, const QString &name);
+    explicit Cell(Layout *parent);
+    explicit Cell(Layout *parent, const QString &name);
 
     Layout * parent() const;
     QString name() const;
@@ -41,12 +44,18 @@ public:
      */
     QRect boundingRect();
 
+    void addRefBy(ReferenceBase* ref);
+
+    void buildCellLink();
+
 private:
     Layout *_parent;
     QString _name;
 
     std::vector<std::unique_ptr<ElementBase> > _elements;
     std::vector<std::unique_ptr<ReferenceBase> > _references;
+
+    QSet<ReferenceBase*> _referBy;
 
 };
 

@@ -98,3 +98,10 @@ void gds::Layout::deleteCell(const QString &name)
         }
     }
 }
+
+void gds::Layout::buildCellLink()
+{
+    for (auto &cell : _cells) {
+        cell->buildCellLink();
+    }
+}

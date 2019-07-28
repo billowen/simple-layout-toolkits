@@ -14,7 +14,7 @@ namespace gds {
 class Layout
 {
 public:
-    Layout(const QString &name, short version);
+    explicit Layout(const QString &name, short version = 0x0258);
 
     QString name() const;
     short version() const;
@@ -42,6 +42,8 @@ public:
      * @param name Cell name
      */
     void deleteCell(const QString &name);
+
+    void buildCellLink();
 private:
     QString _name;
     short _version;

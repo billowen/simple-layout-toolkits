@@ -86,8 +86,8 @@ gds::Transform &gds::Transform::rotate(double degrees)
 QPoint gds::Transform::map(const QPoint &p)
 {
     QPoint ret;
-    ret.setX(p.x() * _matrix[0][0] + p.y() * _matrix[1][0]);
-    ret.setY(p.x() * _matrix[1][0] + p.y() * _matrix[1][1]);
+    ret.setX(int(p.x() * _matrix[0][0] + p.y() * _matrix[1][0]));
+    ret.setY(int(p.x() * _matrix[1][0] + p.y() * _matrix[1][1]));
 
     return ret;
 }

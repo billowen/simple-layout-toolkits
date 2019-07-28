@@ -1,4 +1,5 @@
 #include "cell.h"
+#include "layout.h"
 #include <limits>
 
 gds::Cell::Cell(gds::Layout *parent)
@@ -80,4 +81,22 @@ QRect gds::Cell::boundingRect()
     }
 
     return QRect(QPoint(tlx, tly), QPoint(brx, bry));
+}
+
+void gds::Cell::addRefBy(gds::ReferenceBase *ref)
+{
+    if (ref != nullptr) {
+        _referBy.insert(ref);
+    }
+}
+
+void gds::Cell::buildCellLink()
+{
+    for (auto & ref : _references) {
+        Cell *cell = _parent->cell(ref->refCell());
+        if (cell != nullptr) {
+            ref->setReferTo(cell);
+            cell->addRefBy(ref.get());
+        }
+    }
 }
