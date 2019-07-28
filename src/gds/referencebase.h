@@ -13,29 +13,38 @@ class Cell;
 class ReferenceBase
 {
 public:
-    ReferenceBase(Cell *parent);
+    explicit ReferenceBase(Cell *parent);
     virtual ~ReferenceBase();
 
-    Cell * parent() const;
-    QString refCell() const;
-    QPoint origin() const;
-    double rotation() const;
-    double magnification() const;
-    bool xReflection() const;
-    virtual QRect boundingRect() = 0;
+    Cell * parent();
+    QString refCell();
+    QPoint origin();
+    double rotation();
+    double magnification();
+    bool xReflection();
+    QRect boundingRect();
+    Cell * referTo();
 
     void setRefCell(const QString &cellName);
     void setOrigin(const QPoint &origin);
     void setRotation(double degree);
     void setMagnification(double mag);
     void setXReflection(bool flag);
+    void setReferTo(Cell * referTo);
+    void setBBoxOutdate();
 
-private:
+protected:
+    virtual void calculateBoundingRect() = 0;
+
     Cell *_parent;
     QString _refCell;
     QPoint _origin;
     double _rotation, _magnification;
     bool _xReflection;
+    Cell* _referTo;
+
+    bool _bboxOutdate;
+    QRect _bbox;
 };
 }
 

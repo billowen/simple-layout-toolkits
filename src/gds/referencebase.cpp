@@ -9,6 +9,9 @@ gds::ReferenceBase::ReferenceBase(gds::Cell *parent)
     _rotation = 0;
     _magnification = 0;
     _xReflection = false;
+    _referTo = nullptr;
+    _bboxOutdate = true;
+    _bbox = QRect(QPoint(0, 0), QPoint(0, 0));
 }
 
 gds::ReferenceBase::~ReferenceBase()
@@ -16,34 +19,48 @@ gds::ReferenceBase::~ReferenceBase()
 
 }
 
-gds::Cell *gds::ReferenceBase::parent() const
+gds::Cell *gds::ReferenceBase::referTo()
+{
+    return _referTo;
+}
+
+gds::Cell *gds::ReferenceBase::parent()
 {
     return _parent;
 }
 
-QString gds::ReferenceBase::refCell() const
+QString gds::ReferenceBase::refCell()
 {
     return _refCell;
 }
 
-QPoint gds::ReferenceBase::origin() const
+QPoint gds::ReferenceBase::origin()
 {
     return _origin;
 }
 
-double gds::ReferenceBase::rotation() const
+double gds::ReferenceBase::rotation()
 {
     return _rotation;
 }
 
-double gds::ReferenceBase::magnification() const
+double gds::ReferenceBase::magnification()
 {
     return _magnification;
 }
 
-bool gds::ReferenceBase::xReflection() const
+bool gds::ReferenceBase::xReflection()
 {
     return _xReflection;
+}
+
+QRect gds::ReferenceBase::boundingRect()
+{
+    if (_bboxOutdate) {
+        calculateBoundingRect();
+    }
+
+    return _bbox;
 }
 
 void gds::ReferenceBase::setRefCell(const QString &cellName)
@@ -69,4 +86,14 @@ void gds::ReferenceBase::setMagnification(double mag)
 void gds::ReferenceBase::setXReflection(bool flag)
 {
     _xReflection = flag;
+}
+
+void gds::ReferenceBase::setReferTo(gds::Cell *referTo)
+{
+    _referTo = referTo;
+}
+
+void gds::ReferenceBase::setBBoxOutdate()
+{
+    _bboxOutdate = true;
 }
