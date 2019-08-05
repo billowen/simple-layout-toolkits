@@ -14,7 +14,7 @@ class Cell;
 class Path : public ElementBase
 {
 public:
-    Path(Cell *parent);
+    explicit Path(Cell *parent);
     virtual ~Path();
 
     QVector<QPoint> path() const;

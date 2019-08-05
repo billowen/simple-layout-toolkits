@@ -1,5 +1,6 @@
 #include "cell.h"
 #include "layout.h"
+#include "referencebase.h"
 #include <limits>
 
 gds::Cell::Cell(gds::Layout *parent)
@@ -12,6 +13,13 @@ gds::Cell::Cell(gds::Layout *parent, const QString &name)
 {
     _parent = parent;
     _name = name;
+}
+
+gds::Cell::~Cell()
+{
+    foreach (ReferenceBase* ref, _referBy) {
+        ref->release();
+    }
 }
 
 gds::Layout *gds::Cell::parent() const
@@ -83,11 +91,38 @@ QRect gds::Cell::boundingRect()
     return QRect(QPoint(tlx, tly), QPoint(brx, bry));
 }
 
+void gds::Cell::deleteReference(gds::ReferenceBase *ref)
+{
+    int cnt = 0;
+    for (auto &i : _references) {
+        if (i.get() == ref) {
+            _references.erase(_references.begin() + cnt);
+            break;
+        }
+    }
+}
+
+void gds::Cell::deleteElement(gds::ElementBase *element)
+{
+    int cnt = 0;
+    for (auto &i : _elements) {
+        if (i.get() == element) {
+            _elements.erase(_elements.begin() + cnt);
+            break;
+        }
+    }
+}
+
 void gds::Cell::addRefBy(gds::ReferenceBase *ref)
 {
     if (ref != nullptr) {
         _referBy.insert(ref);
     }
+}
+
+void gds::Cell::removeRefBy(gds::ReferenceBase *ref)
+{
+    _referBy.remove(ref);
 }
 
 void gds::Cell::buildCellLink()

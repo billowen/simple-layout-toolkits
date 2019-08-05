@@ -14,7 +14,7 @@ class Cell;
 class ElementBase
 {
 public:
-    ElementBase(Cell *parent);
+    explicit ElementBase(Cell *parent);
     virtual ~ElementBase();
 
     Cell *parent() const;

@@ -25,6 +25,8 @@ public:
     QRect boundingRect();
     Cell * referTo();
 
+    void release();
+
     void setRefCell(const QString &cellName);
     void setOrigin(const QPoint &origin);
     void setRotation(double degree);

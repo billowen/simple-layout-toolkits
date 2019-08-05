@@ -14,7 +14,7 @@ class Cell;
 class Boundary : public ElementBase
 {
 public:
-    Boundary(Cell *parent);
+    explicit Boundary(Cell *parent);
     virtual ~Boundary();
 
     QVector<QPoint> points() const;

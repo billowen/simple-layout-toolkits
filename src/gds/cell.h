@@ -21,6 +21,7 @@ class Cell
 public:
     explicit Cell(Layout *parent);
     explicit Cell(Layout *parent, const QString &name);
+    ~Cell();
 
     Layout * parent() const;
     QString name() const;
@@ -44,7 +45,11 @@ public:
      */
     QRect boundingRect();
 
+    void deleteReference(ReferenceBase *ref);
+    void deleteElement(ElementBase *element);
+
     void addRefBy(ReferenceBase* ref);
+    void removeRefBy(ReferenceBase* ref);
 
     void buildCellLink();
 

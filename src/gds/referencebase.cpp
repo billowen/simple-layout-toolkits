@@ -1,4 +1,5 @@
 #include "referencebase.h"
+#include "cell.h"
 
 
 gds::ReferenceBase::ReferenceBase(gds::Cell *parent)
@@ -16,12 +17,19 @@ gds::ReferenceBase::ReferenceBase(gds::Cell *parent)
 
 gds::ReferenceBase::~ReferenceBase()
 {
-
+    if (_referTo != nullptr) {
+        _referTo->removeRefBy(this);
+    }
 }
 
 gds::Cell *gds::ReferenceBase::referTo()
 {
     return _referTo;
+}
+
+void gds::ReferenceBase::release()
+{
+    _parent->deleteReference(this);
 }
 
 gds::Cell *gds::ReferenceBase::parent()

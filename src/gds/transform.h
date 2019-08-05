@@ -11,8 +11,8 @@ class Transform
         ~Transform();
 
         Transform &scale(double xScale, double yScale);
-        Transform& translate(double x, double y);
-        Transform& rotate(double degrees);
+        Transform &translate(double x, double y);
+        Transform &rotate(double degrees);
 
         QPoint map(const QPoint &p);
     private:
