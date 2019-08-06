@@ -1,6 +1,8 @@
 #include "cellreference.h"
 #include "transform.h"
 #include <limits>
+#include <QTransform>
+#include <cmath>
 
 
 gds::CellReference::CellReference(gds::Cell *parent)
@@ -25,24 +27,24 @@ void gds::CellReference::calculateBoundingRect()
         _bbox = QRect(QPoint(0, 0), QPoint(0, 0));
     }
 
-    Transform transform;
-    if (_xReflection) {
-        transform = transform.scale(1, -1);
-    }
-    transform = transform
-            .scale(_magnification, _magnification)
-            .rotate(_rotation)
-            .translate(_origin.x(), _origin.y());
+    QTransform xReflectionTransform = _xReflection ? QTransform(1, 0, 0, -1, 0, 0) : QTransform(1, 0, 0, 1, 0, 0);
+    QTransform scaleTransform = QTransform(_magnification, 0, 0, _magnification, 0, 0);
+    const double PI = std::atan(1.0) * 4;
+    double angle = PI * _rotation / 180.0;
+    QTransform rotateTransform = QTransform(std::cos(angle), std::sin(angle), -std::sin(angle), std::cos(angle), 0, 0);
+    QTransform translateTransform = QTransform(1, 0, 0, 1, _origin.x(), _origin.y());
 
-    int width = _bbox.right() - _bbox.left();
-    int height = _bbox.bottom() - _bbox.top();
+    QTransform transform = xReflectionTransform * scaleTransform * rotateTransform * translateTransform;
+
+    int width = cellBox.right() - cellBox.left();
+    int height = cellBox.bottom() - cellBox.top();
 
     QVector<QPoint> pts;
-    QPoint topLeft = _bbox.topLeft();
+    QPoint topLeft = cellBox.topLeft();
     pts.push_back(topLeft);
-    pts.push_back(QPoint(_bbox.left() + width, _bbox.top()));
-    pts.push_back(QPoint(_bbox.left(), _bbox.top() + height));
-    pts.push_back(QPoint(_bbox.left() + width, _bbox.top() + height));
+    pts.push_back(QPoint(cellBox.left() + width, cellBox.top()));
+    pts.push_back(QPoint(cellBox.left(), cellBox.top() + height));
+    pts.push_back(QPoint(cellBox.left() + width, cellBox.top() + height));
 
     int tlx = std::numeric_limits<int>::max();
     int tly = std::numeric_limits<int>::max();
@@ -51,7 +53,7 @@ void gds::CellReference::calculateBoundingRect()
 
     for (auto p : pts)
     {
-        QPoint tmp = transform.map(p);
+        QPoint tmp = p * transform;
         tlx = std::min(tlx, tmp.x());
         tly = std::min(tly, tmp.y());
         brx = std::max(brx, tmp.x());

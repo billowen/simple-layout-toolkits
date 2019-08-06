@@ -1,18 +1,26 @@
 #include "cell.h"
 #include "layout.h"
 #include "referencebase.h"
+#include "elementbase.h"
+#include "boundary.h"
+#include "path.h"
+#include "cellreference.h"
 #include <limits>
 
 gds::Cell::Cell(gds::Layout *parent)
 {
     _parent = parent;
     _name = "";
+    _bboxOutdate = true;
+    _bbox = QRect(QPoint(0, 0), QPoint(0, 0));
 }
 
 gds::Cell::Cell(gds::Layout *parent, const QString &name)
 {
     _parent = parent;
     _name = name;
+    _bboxOutdate = true;
+    _bbox = QRect(QPoint(0, 0), QPoint(0, 0));
 }
 
 gds::Cell::~Cell()
@@ -59,36 +67,29 @@ void gds::Cell::setName(const QString &name)
 
 QRect gds::Cell::boundingRect()
 {
-    if (_elements.size() == 0 && _references.size() == 0) {
-        return QRect(QPoint(0, 0), QPoint(0, 0));
+    if (_bboxOutdate) {
+        calculateBBox();
     }
 
-    int tlx = std::numeric_limits<int>::max();
-    int tly = std::numeric_limits<int>::max();
-    int brx = std::numeric_limits<int>::min();
-    int bry = std::numeric_limits<int>::min();
+    return _bbox;
+}
 
-    for (auto & e : _elements) {
-        QRect rect = e->boundingRect();
-        QPoint topLeft = rect.topLeft();
-        QPoint bottomRight = rect.bottomRight();
-        tlx = std::min(tlx, topLeft.x());
-        tly = std::min(tly, topLeft.y());
-        brx = std::max(brx, bottomRight.x());
-        bry = std::max(bry, bottomRight.y());
-    }
+gds::Boundary *gds::Cell::createBoundary()
+{
+    _elements.push_back(std::unique_ptr<ElementBase>(new Boundary(this)));
+    return dynamic_cast<Boundary*>(_elements.back().get());
+}
 
-    for (auto & e : _references) {
-        QRect rect = e->boundingRect();
-        QPoint topLeft = rect.topLeft();
-        QPoint bottomRight = rect.bottomRight();
-        tlx = std::min(tlx, topLeft.x());
-        tly = std::min(tly, topLeft.y());
-        brx = std::max(brx, bottomRight.x());
-        bry = std::max(bry, bottomRight.y());
-    }
+gds::Path *gds::Cell::createPath()
+{
+    _elements.push_back(std::unique_ptr<ElementBase>(new Boundary(this)));
+    return dynamic_cast<Path*>(_elements.back().get());
+}
 
-    return QRect(QPoint(tlx, tly), QPoint(brx, bry));
+gds::CellReference *gds::Cell::createCellReference()
+{
+    _references.push_back(std::unique_ptr<ReferenceBase>(new CellReference(this)));
+    return dynamic_cast<CellReference*>(_references.back().get());
 }
 
 void gds::Cell::deleteReference(gds::ReferenceBase *ref)
@@ -125,6 +126,11 @@ void gds::Cell::removeRefBy(gds::ReferenceBase *ref)
     _referBy.remove(ref);
 }
 
+QSet<gds::ReferenceBase *> gds::Cell::referBy()
+{
+    return _referBy;
+}
+
 void gds::Cell::buildCellLink()
 {
     for (auto & ref : _references) {
@@ -134,4 +140,38 @@ void gds::Cell::buildCellLink()
             cell->addRefBy(ref.get());
         }
     }
+}
+
+void gds::Cell::calculateBBox()
+{
+    if (_elements.size() == 0 && _references.size() == 0) {
+        _bbox = QRect(QPoint(0, 0), QPoint(0, 0));
+    }
+
+    int tlx = std::numeric_limits<int>::max();
+    int tly = std::numeric_limits<int>::max();
+    int brx = std::numeric_limits<int>::min();
+    int bry = std::numeric_limits<int>::min();
+
+    for (auto & e : _elements) {
+        QRect rect = e->boundingRect();
+        QPoint topLeft = rect.topLeft();
+        QPoint bottomRight = rect.bottomRight();
+        tlx = std::min(tlx, topLeft.x());
+        tly = std::min(tly, topLeft.y());
+        brx = std::max(brx, bottomRight.x());
+        bry = std::max(bry, bottomRight.y());
+    }
+
+    for (auto & e : _references) {
+        QRect rect = e->boundingRect();
+        QPoint topLeft = rect.topLeft();
+        QPoint bottomRight = rect.bottomRight();
+        tlx = std::min(tlx, topLeft.x());
+        tly = std::min(tly, topLeft.y());
+        brx = std::max(brx, bottomRight.x());
+        bry = std::max(bry, bottomRight.y());
+    }
+
+    _bbox = QRect(QPoint(tlx, tly), QPoint(brx, bry));
 }

@@ -5,13 +5,15 @@
 #include <QVector>
 #include <QSet>
 #include <memory>
-#include "elementbase.h"
-#include "referencebase.h"
 
 
 namespace gds {
 class Layout;
 class ReferenceBase;
+class ElementBase;
+class CellReference;
+class Boundary;
+class Path;
 
 /**
  * @brief A collection of drawing elements and references to other Cells (GDSII: STRUCTURE)
@@ -45,15 +47,22 @@ public:
      */
     QRect boundingRect();
 
+    Boundary * createBoundary();
+    Path * createPath();
+    CellReference * createCellReference();
+
     void deleteReference(ReferenceBase *ref);
     void deleteElement(ElementBase *element);
 
     void addRefBy(ReferenceBase* ref);
     void removeRefBy(ReferenceBase* ref);
+    QSet<ReferenceBase *> referBy();
 
     void buildCellLink();
 
 private:
+    void calculateBBox();
+
     Layout *_parent;
     QString _name;
 
@@ -62,6 +71,8 @@ private:
 
     QSet<ReferenceBase*> _referBy;
 
+    bool _bboxOutdate;
+    QRect _bbox;
 };
 
 }

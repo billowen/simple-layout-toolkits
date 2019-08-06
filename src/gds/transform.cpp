@@ -34,6 +34,8 @@ gds::Transform &gds::Transform::scale(double xScale, double yScale)
 
 gds::Transform &gds::Transform::translate(double x, double y)
 {
+//    _matrix[2][0] += x;
+//    _matrix[2][1] += y;
     double tmp[][3] = { {0,0,0},{0,0,0},{0,0,0} };
     tmp[0][0] = _matrix[0][0] + _matrix[0][2] * x;
     tmp[1][0] = _matrix[1][0] + _matrix[1][2] * x;
@@ -86,8 +88,8 @@ gds::Transform &gds::Transform::rotate(double degrees)
 QPoint gds::Transform::map(const QPoint &p)
 {
     QPoint ret;
-    ret.setX(int(p.x() * _matrix[0][0] + p.y() * _matrix[1][0]));
-    ret.setY(int(p.x() * _matrix[1][0] + p.y() * _matrix[1][1]));
+    ret.setX(int(p.x() * _matrix[0][0] + p.y() * _matrix[1][0] + _matrix[2][0]));
+    ret.setY(int(p.x() * _matrix[1][0] + p.y() * _matrix[1][1] + _matrix[2][1]));
 
     return ret;
 }

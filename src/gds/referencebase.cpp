@@ -8,7 +8,7 @@ gds::ReferenceBase::ReferenceBase(gds::Cell *parent)
     _refCell = "";
     _origin = QPoint(0, 0);
     _rotation = 0;
-    _magnification = 0;
+    _magnification = 1.0;
     _xReflection = false;
     _referTo = nullptr;
     _bboxOutdate = true;
